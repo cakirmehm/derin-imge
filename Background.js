@@ -12,7 +12,7 @@ export default class Background {
         this.image = document.getElementById(`backgroundImg`);
 
         this.repeatX = 10;
-        this.width = 2048;
+        this.width = 2000;
         this.height = 1000;
 
         this.x = 0;
@@ -23,11 +23,18 @@ export default class Background {
     }
 
     draw(context) {
-        context.drawImage(this.image, this.x, this.y, this.width, this.height);
+        context.drawImage(
+            this.image,
+            this.x - this.vx,
+            this.y,
+            this.width + this.vx,
+            this.height
+        );
 
         context.drawImage(
             this.image,
-            this.x + this.width - this.vx,
+            // this.x + this.width - this.vx,
+            this.x + this.width,
             this.y,
             this.width,
             this.height

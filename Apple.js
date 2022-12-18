@@ -1,3 +1,5 @@
+import { GROUND_LEVEL, SCALE } from './Utils.js';
+
 export default class Apple {
     constructor(gameWidth, gameHeight) {
         this.gameWidth = gameWidth;
@@ -5,12 +7,11 @@ export default class Apple {
 
         this.image = document.getElementById('appleImg');
 
-        this.groundLevel = 320;
-        this.x = this.gameWidth;
-        this.y = getRand(50, 500);
-
         this.width = 70;
         this.height = 70;
+
+        this.x = this.gameWidth;
+        this.y = getRand(50, 500);
 
         this.frameX = 0;
         this.frameY = 0;
@@ -58,8 +59,8 @@ export default class Apple {
                 sh,
                 this.x,
                 this.y,
-                this.width,
-                this.height
+                this.width * SCALE,
+                this.height * SCALE
             );
         }
     }
@@ -89,9 +90,9 @@ export default class Apple {
 
     hasCollision(that) {
         return (
-            this.x < that.x + that.width * 0.8 &&
+            this.x < that.x + that.width * 0.5 &&
             this.x + this.width > that.x &&
-            this.y < that.y + that.height * 0.8 &&
+            this.y < that.y + that.height * 0.5 &&
             this.height + this.y > that.y
         );
     }

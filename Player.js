@@ -5,6 +5,7 @@ import {
     JumpingRight,
     WalkingRight,
 } from './State.js';
+import { GROUND_LEVEL, SCALE, SOUND_ON } from './Utils.js';
 
 export default class Player {
     constructor(gameWidth, gameHeight) {
@@ -14,10 +15,6 @@ export default class Player {
         this.image = document.getElementById('playerImg');
         this.dustEffect = document.getElementById('effectImg');
 
-        this.groundLevel = 520;
-        this.x = 120;
-        this.y = this.groundLevel;
-
         this.maxvx = 40;
         this.vx = 10;
         this.vy = 0;
@@ -25,6 +22,9 @@ export default class Player {
         this.width = 250;
         this.height = 400;
         this.weight = 0.5;
+
+        this.x = 120;
+        this.y = GROUND_LEVEL - this.height * SCALE;
 
         this.frameX = 0;
         this.frameY = 0;
@@ -38,7 +38,7 @@ export default class Player {
         this.hammers = [];
 
         this.apples = 0;
-        this.score = 0;
+        this.energy = 20;
         this.runInMeters = 0;
 
         this.fps = 8;
@@ -68,7 +68,7 @@ export default class Player {
                 256,
                 256,
                 this.x - 100,
-                this.groundLevel + 128,
+                GROUND_LEVEL - 256,
                 256,
                 256
             );
@@ -82,8 +82,8 @@ export default class Player {
             this.height,
             this.x,
             this.y,
-            this.width,
-            this.height
+            this.width * SCALE,
+            this.height * SCALE
         );
 
         this.hammers.forEach(h => {
@@ -91,13 +91,17 @@ export default class Player {
         });
     }
 
+    getBottom() {
+        return this.y + this.height * SCALE;
+    }
+
     IsOnGround() {
         // console.log(this.y == this.groundLevel);
-        return this.y == this.groundLevel;
+        return this.getBottom() == GROUND_LEVEL;
     }
 
     update(input, deltaTime) {
-        console.log(this.hammers);
+        // console.log(this);
         if (this.frameCounter + deltaTime > this.frameInterval) {
             if (this.displayDust) {
                 if (this.frameXDust < this.maxFramesDust - 1) {
@@ -154,13 +158,15 @@ export default class Player {
             if (this.frameCounter + deltaTime > this.frameInterval) {
                 const hm = new Hammer(this.gameWidth, this.gameHeight, this);
 
-                if (this.hammers.length < this.maxHammerAtOnce)
+                if (this.hammers.length < this.maxHammerAtOnce) {
                     this.hammers.push(hm);
+                    this.playSoundForThrowingHammer();
+                }
             }
         }
 
         this.hammers.forEach(h => {
-            h.update(this, deltaTime);
+            h.update(deltaTime);
 
             if (h.isOutOfScreen()) {
                 h.markedAsDeleted = true;
@@ -169,7 +175,7 @@ export default class Player {
 
         this.hammers = this.hammers.filter(h => !h.markedAsDeleted);
 
-        this.isOutOfEnergy = this.score < 0;
+        this.isOutOfEnergy = this.energy < 0;
     }
 
     setState(state) {
@@ -189,5 +195,11 @@ export default class Player {
             this.y < that.y + that.height &&
             this.height + this.y > that.y
         );
+    }
+
+    playSoundForThrowingHammer() {
+        if (SOUND_ON) {
+            new Audio('./sounds/Fire Ball.wav').play();
+        }
     }
 }

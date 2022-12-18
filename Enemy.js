@@ -1,3 +1,5 @@
+import { GROUND_LEVEL, SCALE } from './Utils.js';
+
 export default class Enemy {
     constructor(gameWidth, gameHeight) {
         this.gameWidth = gameWidth;
@@ -6,12 +8,11 @@ export default class Enemy {
         this.imageIndex = getRand(1, 5);
         this.image = document.getElementById(`enemyImg${this.imageIndex}`);
 
-        this.groundLevel = this.imageIndex === 4 ? 120 : 720;
-        this.x = this.gameWidth;
-        this.y = this.groundLevel;
-
         this.width = 300;
         this.height = 256;
+
+        this.x = this.gameWidth;
+        this.y = this.imageIndex === 4 ? 0 : GROUND_LEVEL - this.height + 32;
 
         this.frameX = 0;
         this.frameY = 0;
@@ -91,9 +92,9 @@ export default class Enemy {
 
     hasCollision(that) {
         return (
-            this.x < that.x + that.width * 0.8 &&
+            this.x < that.x + that.width * 0.5 &&
             this.x + this.width > that.x &&
-            this.y < that.y + that.height * 0.8 &&
+            this.y < that.y + that.height * 0.5 &&
             this.height + this.y > that.y
         );
     }

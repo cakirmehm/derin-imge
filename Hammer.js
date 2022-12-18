@@ -1,21 +1,26 @@
+import { FRICTION, GROUND_LEVEL, SCALE } from './Utils.js';
+
 export default class Hammer {
     constructor(gameWidth, gameHeight, player) {
         this.gameWidth = gameWidth;
         this.gameHeight = gameHeight;
 
         this.image = document.getElementById('hammerImg');
-
-        this.groundLevel = 120;
-        this.x = player.x;
-        this.y = player.y;
+        // this.image = document.getElementById('appleImg');
 
         this.width = 128;
         this.height = 128;
 
+        this.x = player.x;
+        this.y = player.y;
+
         this.vx = 20;
         this.vy = -5;
 
+        this.responseFromGround = -10;
+
         this.weight = 1;
+        this.scale = SCALE;
 
         this.frameX = 0;
         this.frameY = 0;
@@ -42,12 +47,12 @@ export default class Hammer {
             sh,
             this.x,
             this.y,
-            this.width,
-            this.height
+            this.width * this.scale,
+            this.height * this.scale
         );
     }
 
-    update(player, deltaTime) {
+    update(deltaTime) {
         if (this.frameTimer + deltaTime > this.frameInterval) {
             this.frameTimer = 0;
         } else {
@@ -56,29 +61,37 @@ export default class Hammer {
 
         this.x += this.vx;
 
-        this.y += this.vy;
         if (!this.IsOnGround()) {
             this.vy += this.weight;
-        } else this.vy = 0;
+        } else {
+            this.responseFromGround = Math.max(0, this.responseFromGround + 1);
+            this.scale = Math.max(0, this.scale - 0.01);
+            this.vy = this.responseFromGround;
+        }
+
+        this.y += this.vy;
     }
 
     isOutOfScreen() {
         return (
-            this.x + this.width < 0 || this.y + this.height > this.gameHeight
+            this.x + this.width > this.gameWidth ||
+            this.y + this.height > this.gameHeight ||
+            this.y < 0 ||
+            this.x < 0
         );
     }
 
     hasCollision(that) {
         return (
-            this.x < that.x + that.width * 0.8 &&
+            this.x < that.x + that.width * 0.5 &&
             this.x + this.width > that.x &&
-            this.y < that.y + that.height * 0.8 &&
+            this.y < that.y + that.height * 0.5 &&
             this.height + this.y > that.y
         );
     }
 
     IsOnGround() {
         // console.log(this.y == this.groundLevel);
-        return this.y === this.groundLevel;
+        return this.y + this.height * this.scale >= GROUND_LEVEL;
     }
 }

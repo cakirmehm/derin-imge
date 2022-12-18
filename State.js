@@ -45,9 +45,11 @@ export class JumpingRight extends State {
     constructor(player) {
         super('JUMPING RIGHT');
         this.player = player;
+        this.sound = document.getElementById('jumpAudio');
     }
 
     enter() {
+        this.sound.play();
         this.player.frameX = 0;
         this.player.frameY = 2;
         this.player.maxFrames = 1;

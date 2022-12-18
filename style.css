@@ -61,3 +61,32 @@
 #attackBtn:active {
     transform: translateY(-5);
 } */
+
+#startBtn {
+    position: absolute;
+    z-index: 1;
+
+    left: 40%;
+    top: 45%;
+
+    background-color: aquamarine;
+    color: blue;
+
+    font-size: x-large;
+    padding: 10px;
+    border-radius: 10px;
+
+    width: 200px;
+
+    border: 0cm;
+    box-shadow: 10px 10px 2px dimgray;
+}
+
+#startBtn:active {
+    transform: translateY(-5px);
+}
+
+#startBtn:hover {
+    background-color: aqua;
+    cursor: pointer;
+}

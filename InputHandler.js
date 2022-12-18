@@ -1,3 +1,5 @@
+import { IsGameOver, setGameOver } from './script.js';
+
 export default class InputHandler {
     constructor() {
         this.lastKey = '';
@@ -30,6 +32,9 @@ export default class InputHandler {
 
                 case ' ':
                     this.lastKey = 'PRESS space';
+                    if (IsGameOver) {
+                        setGameOver(false);
+                    }
                     break;
             }
         });
@@ -66,6 +71,10 @@ export default class InputHandler {
             this.touchX = e.changedTouches[0].pageX;
             this.touchY = e.changedTouches[0].pageY;
             this.lastKey = 'PRESS up';
+
+            if (IsGameOver) {
+                setGameOver(false);
+            }
         });
 
         window.addEventListener('touchmove', e => {
